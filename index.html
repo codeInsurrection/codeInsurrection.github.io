@@ -10,11 +10,13 @@
       li > a {text-decoration: none; font-size: 1em;}
       h1 {font-size: 1.4em; text-transform: uppercase;}
       ul > li > a > span {margin-right: 1em; padding: 0.2em 0.625em; background-color: steelblue; color: whitesmoke; border-radius: 3px;}
+      #html-pages > ul > li > a > span {background-color: rebeccapurple;}
+      #html-pages {padding-top: 2em;}
     </style>
   </head>
   <body>
     <h1>Test Page</h1>
-    <section>
+    <section id="pdf-pages">
       <h2>Sample PDF files</h2>
       <p>A selection of PDF files in various formats for testing</p>
       <ul>
@@ -36,6 +38,18 @@
         <li>
           <a href='./pdf/image-only.pdf'><span>06</span>An image only PDF</a>
         </li>
+      </ul>
+    </section>
+    <section id="html-pages">
+      <h2>Sample HTML pages</h2>
+      <p>A selection of HTML pages suitable for testing</p>
+      <ul>
+        <li>
+          <a href='https://en.wikipedia.org/wiki/List_of_tallest_buildings_in_New_York_City'><span>01</span>Long static HTML page</a>
+        </li>
+       <li>
+          <a href="https://www.supercars.net/blog/the-definitive-list-of-the-greatest-porsche-911s-ever-made/"><span>02</span>Ad heavy HTML page</a>
+       </li>
       </ul>
     </section>
   </body>
