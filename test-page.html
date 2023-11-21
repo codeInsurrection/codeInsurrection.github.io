@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>FindME Test Page</title>
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        let timer;
+        let theTime;
+
+        console.info ('Test page ready.');
+        document.querySelector('#phloem').addEventListener('click', (e) => {
+          const p = document.querySelector('#phloem-div');
+          p.style.display = p.style.display === 'block' ? 'none' : 'block';
+          e.target.innerText = p.style.display === 'block' ? 'Hide List' : 'Show List';
+        });
+
+        document.querySelector('#xylem').addEventListener('click', (e) => {
+          const x = document.querySelectorAll('body span');
+          const shown = x[2].style.display === 'inline';
+          e.target.innerText = !shown ? 'Hide Items' : 'Show Items';
+
+          x[2].style.display = shown ? 'none':'inline';
+          x[5].style.visibility = shown ? 'hidden':'';
+          x[5].style.position = shown ? 'absolute':'';
+          x[8].style.opacity = shown ? '0':'50%';
+        });
+
+        document.querySelector('#time-div').addEventListener('click', () => {
+          if (theTime) {
+            clearInterval(theTime);
+            theTime=null;
+          } else {
+            theTime = setInterval(() => {document.querySelector('#time').innerText = new Date().toLocaleTimeString();}, 5000);
+          }
+        });
+
+        document.querySelector('#mutate').addEventListener('click', (e) => {
+          const addNewListItem = () => {
+            const li = document.createElement('LI');
+            li.innerText = `Phloem ${Date.now()}`;
+            li.style.color = 'forestgreen';
+            //li.title = 'Advertisement';
+            const ul = document.querySelector('#phloem-div ul');
+            ul.appendChild(li);
+          }
+
+          if (timer) {
+            e.target.innerText = 'Start adding itmes';
+            clearInterval(timer);
+            timer=null;
+          } else {
+            timer = setInterval(() => {addNewListItem();}, 2345);
+            e.target.innerText = 'Stop adding itmes';
+          }
+        });
+
+        theTime = setInterval (() => {
+          document.querySelector('#time-div').innerText = new Date().toLocaleTimeString();
+        }, 1000);
+      });
+    </script>
+    <style>
+      button {cursor: pointer;}
+    </style
+  </head>
+  <body style='font-family:sans; font-size: 2rem; margin: 0.8rem;'>
+    <nav>
+      <button id='phloem'>Show List</button>
+      <button id='xylem'>Show Items</button>
+      <button id='mutate'>Start adding items</button>
+    </nav>
+    <div id='time-div' style='
+      position: fixed;
+      font-size: 0.75em;
+      top: 10px;
+      right: 10px;
+      font-family: monospace;
+      color: limegreen;
+      background-color: #202020;
+      padding: 0.5rem;
+      user-select: none;
+      border-radius: 7px;'></div>
+    <br>
+    <hr>
+    <div id='phloem-div' style='display: none;'>
+      <ul style='list-style: none;'>
+        <li>Phloem 0000000000001</li>
+        <li>Phloem 0000000000002</li>
+        <li>Phloem 0000000000003</li>
+        <li>Phloem 0000000000004</li>
+        <li>Phloem 0000000000005</li>
+        <li>Phloem 0000000000006</li>
+        <li>Phloem 0000000000007</li>
+        <li>Phloem 0000000000008</li>
+        <li>Phloem 0000000000009</li>
+        <li>Phloem 0000000000010</li>
+      </ul>
+
+    </div>
+    <br>
+    <span>1. Xylem is 1.0</span>&nbsp<span>2. Xylem</span>&nbsp<span style='display:none;'>3. Xylem</span>&nbsp<span>4. Xylem</span>&nbsp<span>5. Xylem</span>&nbsp<span style='visibility: hidden; position:absolute;'>6. Xylem</span>&nbsp<span>7. Xylem</span>&nbsp<span>8. Xylem</span>&nbsp<span style='opacity: 0;'>9. Xylem</span>
+
+    <p>Single paragraph, single tag <u>test</u>. This is a <u>test</u> for <u>test</u>Class, not class<u>Test</u> or <u>test</u><u>Test</u> but just <u>test</u>.</p>
+    <div>
+      Here is some text in a div for a test of a testClass<br>
+      Here is a longer split tag test.
+      <span>The quick brown fox <b>jumped</b> <i>over</i> the <span>l<span>az<em>y</em></span></span> <code><kbd><span style='text-transform: uppercase;'><b>d</b></span><i>o</i>g</kbd></code>
+      <u><b> tes</b><em>t</em></u> class or <u><b>tes</b><em>t</em></u>Class?<br>
+      <i><u>test</u>Class <u><em>te</em>s<b>t</b></u>Cl<span>ass</span></i><br>
+    </div>
+    <ul>
+      <li>Empire State Building</li>
+      <li>A test</li>
+      <li>Another TEST</li>
+      <li>And another Test.</li>
+      <li>A spanned <span>test</span></li>
+      <li>Another test of some mixed word combinations testTest, testCase, caseTest, test case</li>
+      <li>Need to establish a word boundary at the end of a tag as in the above which ends with case but doesn't flag up. This is a case cased caser test cases</li>
+      <li>Some tagged tests <b>testCa</b>se <span>te<i>st</i></span>Case</li>
+    </ul>
+    <div>
+      This is a test of whether <code>var <span>testCase</span> = <span>test</span>.<span>toLowerCase()</span></code> gets picked up ok.
+    </div>
+    <p>
+      Finally a longer paragraph that has some instances of our word to look for. Sometimes on its own and sometimes as part of a longer word
+      There are also some line breaks introduced. So lets do some testing for presence of the word test. It's always a good idea when doing this type of
+      thing to make sure you add lots of different cases. We could Test for the smartest cookie or retest an already completed test. Sometimes we should
+      start a sentence with our word. Test this, they said. Sometimes we should end with the word. Just complete the test. Or alternatively we
+      could bundle it with some punctuation, no one likes a suprise after all. Damn it, I hate a test! Is this even a test? TEST TESTing TEST
+      So some other ideas: tes tee tan and tsetse are not to be highlighted as part of this test. TeSt is ok, sometimes, test.indexOf, test = 1, test>andy, test[1] or test{a: 1, test: 'test-one', tested: true} or maybe let test;
+      There should be 21 instances in this paragraph alone. Te
+    </p>
+    <p>st across two p tags. The cost of living is increasing. It now costs 100's of GBP to buy the simplest stuff. I paid over £100 for a test yestesterday. </p>
+    <pre style='background-color: black; color: gainsboro; font-size: 12px; padding: 30px 70px 20px 0; border-radius: 8px; width: fit-content;'>
+      /* An example */
+      const test = (arrays) => {
+        console.info (`There are ${arrays.length} test arrays.`);
+        let total = 0;
+        arrays.forEach(a => {
+          total += a.length;
+        });
+
+        return total;
+      }
+      </pre>
+      <ul style='list-style:none;direction: ltr;'>
+        <li style='display: inline;'>
+          <a href="/wiki/Category:Graduates_of_the_Royal_Military_College,_Sandhurst" title="Category:Graduates of the Royal Military College, Sandhurst">Graduates of the Royal Military College, Sandhurst</a>
+        </li>
+        <li style='display: none;'>
+          <a href="/wiki/Category:Graduates_of_the_Royal_Military_College,_Sandhurst" title="Hidden:Graduates of the Royal Military College, Sandhurst">Hidden Graduates of the Royal Military College, Sandhurst</a>
+        </li>
+        <li style='display: inline; border-left: 1px solid silver; padding-left: 5px;'>
+          <a href="#" title="Category:Graduates of the Royal Naval College, Sandhurst (part 2)">Graduates of the Royal Naval College, Dartmouth</a>
+        </li>
+      </ul>
+      <p>Some more text here to see if single characters followed by a period will be detected as whole word only instances. If not then how to fix it becomes an issue that needs to be added to the list of bugs!
+        So, lets try there was 1, 2 and then 3 bottles on the wall. Then there was 1. Later there were 123. All of which seemsed to be ok.
+      </p>
+      1. 2. 321.
+  </body>
+</html>
