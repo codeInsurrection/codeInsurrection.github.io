@@ -46,7 +46,7 @@
           }
 
           if (timer) {
-            e.target.innerText = 'Start adding itmes';
+            e.target.innerText = 'Start adding items';
             clearInterval(timer);
             timer=null;
           } else {
@@ -57,7 +57,7 @@
 
         theTime = setInterval (() => {
           document.querySelector('#time-div').innerText = new Date().toLocaleTimeString();
-        }, 1000);
+        }, 300000);
       });
     </script>
     <style>
