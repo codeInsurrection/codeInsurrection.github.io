@@ -56,8 +56,26 @@
         });
 
         theTime = setInterval (() => {
+          const getRandomInt = (min, max) => {
+            min = Math.ceil(min);
+            max = Math.floor(max);
+            return Math.floor(Math.random() * (max - min) + min); // The maximum is exclusive and the minimum is inclusive
+          }
+          document.querySelector('ad-div').innerHtml='';
           document.querySelector('#time-div').innerText = new Date().toLocaleTimeString();
+          const colors = ['red','green','blue','orange', 'yellow', 'cyan', 'chocolate', 'salmon', 'rebeccapurple', 'steelblue'];
+          const r = getRandomInt(0, 11);
+          for (let i = 0; i < r; i++) {
+            const ad = document.createElement('div');
+            ad.textContent = 'This is a pseudo advert';
+            ad.style.backgroundColor = colors[i];
+            document.querySelector('ad-div').appendChild(ad);
+          }
+
+          
+          
         }, 1000);
+        
       });
     </script>
     <style>
@@ -166,5 +184,6 @@
         So, lets try there was 1, 2 and then 3 bottles on the wall. Then there was 1. Later there were 123. All of which seemsed to be ok.
       </p>
       1. 2. 321.
+      <div id='ad-holder'></div>
   </body>
 </html>
