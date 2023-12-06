@@ -61,7 +61,8 @@
             max = Math.floor(max);
             return Math.floor(Math.random() * (max - min) + min); // The maximum is exclusive and the minimum is inclusive
           }
-          document.querySelector('ad-holder').innerHtml='';
+          
+          document.querySelector('#ad-holder').innerHtml='';
           document.querySelector('#time-div').innerText = new Date().toLocaleTimeString();
           const colors = ['red','green','blue','orange', 'yellow', 'cyan', 'chocolate', 'salmon', 'rebeccapurple', 'steelblue'];
           const r = getRandomInt(0, 11);
@@ -69,7 +70,7 @@
             const ad = document.createElement('div');
             ad.textContent = 'This is a pseudo advert';
             ad.style.backgroundColor = colors[i];
-            document.querySelector('ad-holder').appendChild(ad);
+            document.querySelector('#ad-holder').appendChild(ad);
           }
 
           
