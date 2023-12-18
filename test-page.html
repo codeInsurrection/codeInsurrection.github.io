@@ -187,5 +187,19 @@
         So, lets try there was 1, 2 and then 3 bottles on the wall. Then there was 1. Later there were 123. All of which seemsed to be ok.
       </p>
       1. 2. 321.
+      <br>
+      <p>Below is a textarea which may pose a problem to highlighting.</p>
+      <b>TEXTAREA</b>
+      <textarea>
+        /* This is a text area with some JavaScript */
+        const bigArray = [];
+        bigArray.forEach (e => {
+          console.info (`Testing array entry ${e.index}`);
+          const result = this.#getResult (e);
+          newArray.push (result);
+        }
+
+        console.info (`There are ${newArray.length} results.`, newArray);
+      </textarea>
   </body>
 </html>
