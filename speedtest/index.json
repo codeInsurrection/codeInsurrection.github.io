@@ -1,1 +1,8 @@
-
+{
+  files: [
+    {
+      file: 'TEST-IMAGE.jpg',
+      size: 1234
+    }
+  ]
+}
