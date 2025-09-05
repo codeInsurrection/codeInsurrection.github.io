@@ -1,8 +1,16 @@
 {
   "files": [
     {
-      "file": "TEST-IMAGE.jpg",
+      "file": "small.jpg",
       "size": 901413
+    },
+    {
+      "file": "medium.jpg",
+      "size": 3604765
+    },
+    {
+      "file": "large.jpg",
+      "size": 17311405
     }
   ]
 }
