@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi Language Test</title>
+    <style>
+      .container {
+        padding: 2rem;
+      }
+
+      .example-text {
+        margin-left: 3rem;
+        border-left: 5px solid steelblue;
+        padding-left: 1rem;
+        font-size: 1.4rem;
+      }
+
+      .rtl-example {
+        margin-right: 3rem;
+        border-right: 5px solid steelblue;
+        padding-right: 1rem;
+        font-size: 1.4rem;
+        direction: rtl;
+      }
+
+      .content {
+        margin-bottom: 3rem;
+        background-color: #e4e4e4;
+        padding: 1rem;
+        border: 1px solid rgba(0, 0, 0, 0.2);
+        border-radius: 8px;
+      }
+
+      h2 {
+        margin-left: 3rem;
+        margin-bottom: 2rem;
+        color: steelblue;
+        font-family: sans-serif;
+      }
+
+      h2.rtl {
+        margin-right: 3rem;
+        margin-left: 0;
+        display: flex;
+        flex-direction: row-reverse;
+      }
+    </style>
+
+
+</head>
+<body>
+    <div class="container">
+        <h1>Multi Language Test</h1>
+
+        <div class="content">
+            <h2>English</h2>
+
+            <p class="example-text">
+                This is a paragraph with multiple sentences that can be selected and read aloud.
+                The KaraokeSession class will track each word as it's spoken, highlighting them
+                in real-time. Try selecting any portion of this text and clicking "Start Reading"!
+            </p>
+
+        </div>
+
+        <div class="content">
+            <h2 class='rtl'>Arabic</h2>
+            <p class="rtl-example">
+                هذا نص عربي للاختبار. يدعم النظام النصوص من اليمين إلى اليسار.
+                يمكنك تحديد هذا النص وقراءته بصوت عالٍ مع التمييز المناسب.
+            </p>
+
+        </div>
+
+        <div class='content'>
+          <h2>Nonesense</h2>
+          <p class="example-text">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
+            incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
+            exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+          </p>
+        </div>
+
+        <div class="content">
+            <h2>French</h2>
+
+            <p class="example-text">
+                Plan Trump pour Gaza : derrière l’approbation des pays arabes, la frustration face à un texte largement modelé par Israël.
+                Le président américain a ignoré les suggestions des pays musulmans qui regrettent notamment que le retrait israélien de la bande de Gaza ne soit pas encadré par un calendrier précis.
+            </p>
+
+        </div>
+
+        <div class="content">
+            <h2>Chinese</h2>
+
+            <p class="example-text">
+              几个小时后，她的家人意识到金先生也卷入了这场被活动人士称为中国几十年来最大规模的基督徒大抓捕事件。
+              有些人现在担心，上周末对30名与金先生创立的锡安教会有关的基督徒的抓捕，标志着一场可能对地下教会进行更广泛打击的开始。
+            </p>
+
+        </div>
+</body>
+</html>
