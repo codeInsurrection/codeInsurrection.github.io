@@ -1,4 +1,5 @@
 class DashboardState {
+	/* Simple State */
 	static #token = '';
 	static set token(value) {
 		DashboardState.#token = value;
