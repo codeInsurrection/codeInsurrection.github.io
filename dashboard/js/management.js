@@ -129,6 +129,7 @@ class DashboardHelper {
 }
 
 const clearDetails = () => {
+	/* Clear Details */
 	const d = document.querySelector('div#user-details');
 	document.querySelectorAll('div#user-details > div > span').forEach(e => e.textContent = '');
 	if (d.style.display !== 'none') d.style.display = 'none';
