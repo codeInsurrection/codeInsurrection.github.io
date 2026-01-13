@@ -154,7 +154,9 @@ const getField = (fieldName) => {
 }
 
 const clearClipboard = () => {
-	navigator.clipboard.writeText(undefined).then ();
+	try {
+		navigator.clipboard.writeText(undefined).then ();
+	} catch{}
 }
 
 const logout = () => {
@@ -163,6 +165,9 @@ const logout = () => {
 	clearDetails();
 	clearClipboard();
 	document.querySelector('input#finduser').value = '';
+	const fl = document.querySelector('input#checklicence');
+	fl.value = '';
+	fl.style.backgroundColor = '#FFFFFF';
 	document.querySelector('button#copy-licences').style.visibility = 'hidden';
 	loggedInUser.style.opacity = '0';
 	Array.from(document.querySelector('div#container').children).forEach(e => e.classList.add('disabled'));

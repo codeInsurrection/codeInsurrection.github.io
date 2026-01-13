@@ -52,7 +52,7 @@ body {
 }
 
 #finduser {
-	min-width: 350px;
+	min-width: 380px;
 	margin-right: 1rem;
 }
 
@@ -68,7 +68,7 @@ div#find-user > div.close {
 	font-family: sans-serif;
 	font-size: 15px;
 	top: 1.5rem;
-	left: calc(350px + 0.25rem);
+	left: calc(380px + 0.25rem);
 	cursor: pointer;
 	background-color: rgba(0, 0, 0, 0.15);
 	border-radius: 50%;
