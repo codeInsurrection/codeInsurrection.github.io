@@ -374,4 +374,33 @@ span#action-result {
 	transition: transform 250ms;
 }
 
+#portcullis {
+	position: fixed;
+	top: 70px;
+	left: 0;
+	z-index: 10000;
+	width: 100%;
+	height: calc(100% - 70px);
+	background-color: #5682b1;
+	transition: top 1500ms;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	user-select: none;
+}
+
+#portcullis > span:nth-of-type(1) {
+	color: whitesmoke;
+	font-size: 75px;
+	font-family: serif;
+	margin-top: -14rem;
+}
+
+#portcullis > span:nth-of-type(2) {
+	color:       #8AC2FF;
+	font-family: sans-serif;
+	font-size:   21px;
+}
+
 

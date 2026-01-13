@@ -168,6 +168,11 @@ const logout = () => {
 	Array.from(document.querySelector('div#container').children).forEach(e => e.classList.add('disabled'));
 	delete loggedInUser.dataset.id;
 
+	const portcullis = document.querySelector('#portcullis');
+	const tph = document.querySelector('#top-panel').offsetHeight;
+	portcullis.style.top = tph + 'px';
+	portcullis.style.height = `calc(100% - ${tph}px`;
+
 	document.querySelectorAll('#licence-list > span').forEach(e => e.remove());
 
 	const dialog = document.querySelector('dialog');
@@ -189,6 +194,18 @@ document.addEventListener('DOMContentLoaded', async () => {
 	const userid = document.querySelector('#user');
 	const dialog = document.querySelector('dialog');
 	const actionResult = document.querySelector('span#action-result');
+	const portcullis = document.querySelector('#portcullis');
+
+	// setTimeout (() => {
+	// 	portcullis.addEventListener('transitionend', () => {
+	// 		portcullis.style.display = 'none';
+	// 	}, {once: true});
+	// }, 1750);
+
+	const tph = document.querySelector('#top-panel').offsetHeight;
+	portcullis.style.top = tph + 'px';
+	portcullis.style.height = `calc(100% - ${tph}px`;
+
 
 	clearDetails();
 
@@ -224,6 +241,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 		if (DashboardState.token.length) {
 			document.querySelectorAll('div.disabled').forEach(e => e.classList.remove('disabled'));
+			portcullis.style.top = window.innerHeight + tph + 'px';
 
 			e.target.textContent = 'Logout';
 			userid.textContent = DashboardState.user;
