@@ -264,6 +264,39 @@ document.addEventListener('DOMContentLoaded', async () => {
 		usernameField.focus();
 	});
 
+	document.querySelector('select#licence-feature').addEventListener('change', (e) => {
+		/* If selecting an assessor feature licence then set type to assessor */
+		const type = document.querySelector('select#licence-type');
+		switch (e.target.value) {
+			case 'Student':
+				type.value = '3 year';
+				break;
+
+			case 'Assessor':
+				type.value = 'Assessor';
+				break;
+		}
+	});
+
+	document.querySelector('select#licence-type').addEventListener('change', (e) => {
+		/* If selecting an assessor type set feature to assessor */
+		const feature = document.querySelector('select#licence-feature');
+
+		switch (e.target.value) {
+			case 'Assessor':
+				feature.value = 'Assessor';
+				break;
+
+			case 'Testing':
+				feature.value = 'Standard';
+				break;
+
+			default:
+				if (feature.value === 'Assessor') feature.value = 'Student';
+		}
+	});
+
+
 	document.querySelector('input#finduser').addEventListener('input', () => {
 		clearDetails();
 	});
