@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang='en'>
+	<head>
+		<script lang='javascript' src='js/management.js' defer></script>
+		<link rel='stylesheet' href='css/management.css' media='screen'/>
+		<meta charset='UTF-8'>
+		<title>FM TTS - Dashboard</title>
+	</head>
+	<body>
+		<div id='top-panel'>
+			<div id='top-panel-container'>
+				<div id='user'></div>
+				<div id='login-panel'>
+					<input type='text' id='username' placeholder='Username' autofocus autocomplete='email' />
+					<input type='password' id='password' placeholder='Password'/>
+					<button type='button' id='login'>Login</button>
+				</div>
+			</div>
+		
+		</div>
+		<div id='portcullis'>
+			<span>Twofires Education</span>
+			<span>Enhance Reading Transform Learning Maximise Research</span>
+		</div>
+		<div id='container'>
+			<div id='find-user' class='disabled'>
+				<input type='text' id='finduser' placeholder='Find user by email'/>
+				<div class='close'>x</div>
+				<button id='find-user-button'>Find User</button>
+				<div id='user-details'>
+					
+					<div id='user-fullname'>
+						<span></span>
+						<span></span>
+					</div>
+					<div id='user-email'>
+						<span></span>
+						<span></span>
+					</div>
+					<div id='user-initials'>
+						<span></span>
+						<span></span>
+					</div>
+					<div id='user-registered'>
+						<span></span>
+						<span></span>
+					</div>
+					<div class='spacer'></div>
+					<div id='user-licenceKey'>
+						<span></span>
+						<span></span>
+					</div>
+					<div id='user-licenceType'>
+						<span></span>
+						<span></span>
+					</div>
+					<div class='spacer'></div>
+					<div id='user-feature'>
+						<span></span>
+						<span></span>
+					</div>
+					<div id='user-appFeatureSet'>
+						<span></span>
+						<span></span>
+					</div>
+					<div id='user-roles'>
+						<span></span>
+						<span></span>
+					</div>
+					<div class='spacer'></div>
+					<div id='user-status'>
+						<span></span>
+						<span></span>
+					</div>
+					<div id='user-expires'>
+						<span></span>
+						<span></span>
+					</div>
+					<div id='user-enabled'>
+						<span></span>
+						<span></span>
+					</div>
+					<div id='user-locked'>
+						<span></span>
+						<span></span>
+					</div>
+					
+					<div id='actions'>
+						<button id='user-action-user-delete' class='alert'>Delete User</button>
+						<button id='user-action-licence-revoke' class='warn' hidden>Remove Licence</button>
+						<button id='user-action-user-prompt'>Password Change</button>
+						<button id='user-action-user-resend'>Resend Welcome</button>
+					</div>
+					<span id='action-result'></span>
+				</div>
+			</div>
+			<div id='licences' style='margin-top:1rem;' class='disabled'>
+				<div id='licence-checker'>
+					<input type='text' id='checklicence' placeholder='Check a licence ...' autocomplete='off'/>
+					<div class='close'>x</div>
+					<button id='check-licence-button'>Check Licence</button>
+				</div>
+				<div id='gen-title'>Licence Generator</div>
+				<div id='licence-gen'>
+					<div class='licence-grid'>
+						<label for='licence-type'>Licence</label>
+						<select id='licence-type'>
+							<option value='1 year'>1 year</option>
+							<option value='2 year'>2 year</option>
+							<option value='3 year' selected>3 year</option>
+							<option value='4 year'>4 year</option>
+							<option value='5 year'>5 year</option>
+							<option value='Testing'>30 day evaluation</option>
+							<option value='Assessor'>Assessor</option>
+						</select>
+						
+					</div>
+					<div class='licence-grid'>
+						<label for='licence-feature'>Licence Type</label>
+						<select id='licence-feature'>
+							<option value='Standard'>Standard</option>
+							<option value='Student' selected>Student</option>
+							<option value='Assessor'>Assessor</option>
+						</select>
+						
+					</div>
+					<div class='licence-grid'>
+						<label for='licence-count'>Count</label>
+						<input type='number' id='licence-count' min='0' max='100' value='1'/>
+					</div>
+					<div class='licence-grid'>
+						<label for='licence-comment'>Comment</label>
+						<textarea id='licence-comment' placeholder='What are these for ...'></textarea>
+						
+					</div>
+					<div id='lic-results' class='licence-grid'>
+						<span style='font-size: 18px; font-family:sans-serif;padding: 0.4rem; font-weight:bold;'>Issued licences</span>
+						<div id='issued-licences'>
+							<div id='licence-list' class='copyable'></div>
+							<button id='copy-licences' class='clean' style='width: 315px;visibility: hidden; margin-top:0.7rem;'>Copy</button>
+						</div>
+					</div>
+				</div>
+				<button id='gen-licences' class='go'>Generate</button>
+				
+			</div>
+			
+		</div>
+		<dialog id='confirm-action' closedBy='none'>
+			<div style='margin: 1rem 0;'>
+				<div id='dialog-title'></div>
+				<div id='dialog-prompt'></div>
+				<div id='dialog-buttons'>
+					<button id='confirm' class='alert'>Yes</button>
+					<button id='cancel' class='go' style='margin-right: 1rem;' autofocus>No</button>
+				</div>
+			</div>
+		</dialog>
+	</body>
+</html>
