@@ -58,7 +58,7 @@ body {
 
 div#container {
 	display: flex;
-	gap: 3rem;
+	gap: 6rem;
 	flex-direction: row;
 	flex-wrap: wrap;
 }
@@ -78,29 +78,32 @@ div#find-user > div.close {
 	transition: transform 250ms;
 }
 
-div#user-details {
-	display: none;
+div.user-details {
+	display: block;
 	font-family: monospace;
 	font-size: 16px;
-	padding: 1rem 0;
-	margin-left: 4px;
-	margin-top: 1.5rem;
-
+	padding: 1rem;
+	border: 1px solid rgba(0, 0, 0, .05);
+	background-color: rgba(0, 0, 0, 0.08);
+	border-radius: 4px;
+	min-height: 454px;
+	margin: 2rem 50px 0;
+	/*box-shadow: 0 6px 10px 1px rgba(0, 0, 0, 0.25);*/
 }
 
-div#user-details > div {
+div.user-details > div {
 	display: grid;
 	align-items: baseline;
 	grid-template-columns: 180px 500px;
 	margin-top: 0.35rem;
 }
 
-div#user-details > div span:nth-of-type(1) {
+div.user-details > div span:nth-of-type(1) {
 	color: black;
 	font-weight: bold;
 }
 
-div#user-details > div span:nth-of-type(2) {
+div.user-details > div span:nth-of-type(2) {
 	color: #444;
 	font-weight: normal;
 	padding: 0 0.5rem;
@@ -111,9 +114,12 @@ div.spacer {
 	margin-bottom: 1rem;
 }
 
-div#user-details > div#actions {
+div#actions {
 	display: flex;
-	margin-top: 4rem;
+	flex-direction: row;
+	flex-wrap: wrap;
+	justify-content: space-evenly;
+	align-items: center;
 	gap: 1rem;
 }
 
@@ -402,5 +408,28 @@ span#action-result {
 	font-family: sans-serif;
 	font-size:   21px;
 }
+
+#users-container {
+	max-width: 700px;
+	min-height: 615px;
+}
+
+#user-action-container {
+	margin-top: 2rem;
+}
+
+div.user-details > div#user-fullname.user-title {
+	display: block;
+	width: 100%;
+	background-color: steelblue;
+	padding: 1rem;
+	margin-top: -1rem;
+	margin-left: -1rem;
+	text-align: center;
+	margin-bottom: 1rem;
+	border-top-left-radius: 4px;
+	border-top-right-radius: 4px;
+}
+
 
 

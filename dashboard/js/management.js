@@ -1,5 +1,6 @@
 class DashboardState {
 	static #token = '';
+	static #carousel = undefined;
 	static set token(value) {
 		DashboardState.#token = value;
 	}
@@ -14,6 +15,14 @@ class DashboardState {
 		const jwt = JSON.parse(atob(DashboardState.#token?.split('.')?.[1]));
 		return jwt?.Email ?? '';
 	}
+
+	static set carousel(value) {
+		DashboardState.#carousel = value;
+	}
+
+	static get carousel() {
+		return DashboardState.#carousel;
+	}
 }
 
 class DashboardHelper {
@@ -24,7 +33,8 @@ class DashboardHelper {
 	 * @returns {Promise<any|string|string>}
 	 */
 	static async ApiCall(name, options = {}) {
-		const host = 'api.twofires.education';
+		// const host = 'api.twofires.education';
+		const host = 'localhost';
 
 		const map = {
 			test: {
@@ -97,7 +107,6 @@ class DashboardHelper {
 
 		const endpoint = map[name];
 		const endpointUrl = endpoint.queryString ? endpoint.url + `${endpoint.queryString}` : endpoint.url;
-		console.info ('APP', endpointUrl);
 
 		try {
 			const api = await fetch(new Request(endpointUrl, {
@@ -129,9 +138,9 @@ class DashboardHelper {
 }
 
 const clearDetails = () => {
-	const d = document.querySelector('div#user-details');
-	document.querySelectorAll('div#user-details > div > span').forEach(e => e.textContent = '');
-	if (d.style.display !== 'none') d.style.display = 'none';
+	const d = document.querySelector('div.user-details');
+	document.querySelectorAll('div.user-details > div > span').forEach(e => e.textContent = '');
+	//if (d.style.display !== 'none') d.style.display = 'none';
 }
 
 const buildModal = (title, prompt, action) => {
@@ -149,20 +158,31 @@ const buildModal = (title, prompt, action) => {
 	dialog.showModal();
 }
 
+const clearResults = () => {
+	DashboardState.carousel?.destroy({completely: true});
+	document.querySelectorAll('.splide__slide:not(#user-template)').forEach(e => {
+		e?.remove();
+	});
+	DashboardState.carousel = undefined;
+
+}
+
 const getField = (fieldName) => {
-	return document.querySelector (`div#user-${fieldName} > span:nth-of-type(2)`).textContent;
+	const selectedUser = document.querySelector('.splide__slide.is-active > .user-details');
+
+	return selectedUser?.querySelector (`div#user-${fieldName} > span:nth-of-type(2)`).textContent ?? '';
 }
 
 const clearClipboard = () => {
 	try {
-		navigator.clipboard.writeText(undefined).then ();
+		navigator.clipboard.writeText(undefined).then().catch();
 	} catch{}
 }
 
 const logout = () => {
 	const loggedInUser = document.querySelector('#user');
 	DashboardState.token = '';
-	clearDetails();
+	clearResults();
 	clearClipboard();
 	document.querySelector('input#finduser').value = '';
 	const fl = document.querySelector('input#checklicence');
@@ -212,8 +232,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 	portcullis.style.height = `calc(100% - ${tph}px`;
 
 
-	clearDetails();
-
+	clearResults();
 	usernameField.value = '';
 	passwordField.value = '';
 
@@ -242,8 +261,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 		DashboardState.token = r?.tokens?.authorisationToken ?? '';
 
-		if (typeof r === 'string') console.info (r);
-
 		if (DashboardState.token.length) {
 			document.querySelectorAll('div.disabled').forEach(e => e.classList.remove('disabled'));
 			portcullis.style.top = window.innerHeight + tph + 'px';
@@ -254,7 +271,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 			userid.style.opacity = userid.textContent.length ? '1' : '0';
 
 			setTimeout(() => {
-				logout();
+				//logout();
 				e.target.textContent = 'Login';
 			}, 5 * 60 * 1000);
 		}
@@ -297,18 +314,36 @@ document.addEventListener('DOMContentLoaded', async () => {
 	});
 
 
-	document.querySelector('input#finduser').addEventListener('input', () => {
-		clearDetails();
+
+	[
+		{input: 'input#password', button: 'button#login'},
+		{input: 'input#finduser', button: 'button#find-user-button'},
+		{input:'input#checklicence', button:'button#check-licence-button'}
+	].forEach (n => {
+		document.querySelector(n.input).addEventListener('keypress', (ev) => {
+			if (ev.keyCode === 13 || ev.key === 'Enter') {
+				document.querySelector(n.button).click();
+			}
+		});
 	});
+
 
 	document.querySelectorAll('div.close').forEach(el => {
 		el.addEventListener('click', (e) => {
 			const pes = e.target.previousElementSibling;
-			if (pes.id === 'checklicence') {
-				pes.style.backgroundColor = '';
-			}
 			pes.value = '';
+
+			switch (pes.id) {
+				case 'checklicence':
+					pes.style.backgroundColor = '';
+					break;
+
+				case 'finduser':
+					//pes.dispatchEvent(new InputEvent('input'));
+					break;
+			}
 			pes.focus();
+
 		});
 	});
 
@@ -371,7 +406,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 		const r = await DashboardHelper.ApiCall('checkLicence', {queryString: `?licenceKey=${lk.value}`});
 
-		console.info ('APP', r);
 		lk.focus();
 		lk.style.backgroundColor = r?.assigned ? '#47d547' : '#e85a5a';
 
@@ -388,55 +422,83 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 		if (u === '') return;
 		let email = '';
+		let ix = 0;
 
 		const r = await DashboardHelper.ApiCall('getUser', {queryString: `?user=${u}`});
-		if (r.length) {
-			const keys = Object.keys(r[0]);
-			keys.forEach(k => {
-				const h = document.querySelector(`#user-${k}`);
-				if (h) {
-					h.querySelector('span:nth-of-type(1)').textContent = (k[0].toUpperCase() + k.substring(1)).split(/(?=[A-Z])/).join (' ');
-					const val = h.querySelector('span:nth-of-type(2)');
-					val.textContent = typeof r[0][k] === 'boolean' ? r[0][k] ? 'Yes' : 'No' : r[0][k];
 
-					switch (k) {
-						case 'appFeatureSet':
-							val.classList.remove ('feature-set');
-							if (+val.textContent > 0) val.classList.add('feature-set');
-							break;
+		if (r.length && Array.isArray(r)) {
+			clearResults();
 
-						case 'feature':
-							val.classList.remove ('feature-student','feature-assessor', 'feature-standard');
-							val.classList.add ('feature-' + val.textContent.toLowerCase());
-							break;
+			const userDetailTemplate = document.querySelector('#user-template');
+			r?.forEach(u => {
+				const userDetail = userDetailTemplate.cloneNode(true);
+				const id = '_' + Date.now() + ix.toString();
+				userDetail.id = id;
+				document.querySelector('.splide__list').appendChild(userDetail);
 
-						case 'registered':
-						case 'enabled':
-							if (val.textContent === 'No') val.classList.add('alert');
-							break;
+				const keys = Object.keys(u);
+				keys.forEach(k => {
+					const h = document.querySelector(`#${id} > .user-details > #user-${k}`);
+					if (h) {
+						h.querySelector('span:nth-of-type(1)').textContent = (k[0].toUpperCase() + k.substring(1)).split(/(?=[A-Z])/).join (' ');
+						const val = h.querySelector('span:nth-of-type(2)');
+						val.textContent = typeof u[k] === 'boolean' ? u[k] ? 'Yes' : 'No' : u[k];
 
-						case 'locked':
-							if (val.textContent === 'Yes') val.classList.add('alert');
-							break;
+						switch (k) {
+							case 'appFeatureSet':
+								val.classList.remove ('feature-set');
+								if (+val.textContent > 0) val.classList.add('feature-set');
+								break;
 
-						case 'status':
-							if (val.textContent === 'Invalid') val.classList.add('alert');
-							break;
+							case 'feature':
+								val.classList.remove ('feature-student','feature-assessor', 'feature-standard');
+								val.classList.add ('feature-' + val.textContent.toLowerCase());
+								break;
 
-						case 'email':
-							email = val.textContent;
-							break;
+							case 'registered':
+							case 'enabled':
+								if (val.textContent === 'No') val.classList.add('alert');
+								break;
 
-						default:
-							val.classList.remove('alert');
+							case 'locked':
+								if (val.textContent === 'Yes') val.classList.add('alert');
+								break;
 
+							case 'status':
+								if (val.textContent === 'Invalid') val.classList.add('alert');
+								break;
+
+							case 'email':
+								email = val.textContent;
+								break;
+
+							default:
+								val.classList.remove('alert');
+
+						}
 					}
+				});
+				// const ud = userDetail.querySelector('.user-details');
+				// ud.style.display = 'block';
+				ix += 1;
+			});
+
+			document.querySelector('div#actions').style.display = document.querySelector('#user').dataset.id === email ? 'none' : 'flex';
+			const c = new Splide( '.splide', {
+				type   : 'loop',
+				direction: 'ttb',
+				wheel: true,
+				releaseWheel: true,
+				height: '520px',
+				width: '775px',
+				padding: {
+					top: 0,
+					bottom: 0
 				}
 			});
-			const ud = document.querySelector('#user-details');
-			ud.style.display = 'block';
 
-			document.querySelector('div#actions').style.display = document.querySelector('#user').dataset.id === email ? 'none' : 'block';
+			DashboardState.carousel = c;
+			DashboardState.carousel.mount();
 		}
 	});
 
@@ -494,6 +556,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 
 		}
+	});
+
+	document.querySelector('#clear-results').addEventListener('click', () => {
+		clearResults();
 	});
 
 });

@@ -1,8 +1,12 @@
 <!DOCTYPE html>
 <html lang='en'>
 	<head>
+		<script src='assets/js/splide.min.js'></script>
 		<script lang='javascript' src='js/management.js' defer></script>
+		
 		<link rel='stylesheet' href='css/management.css' media='screen'/>
+		<link rel="stylesheet" href='assets/css/splide-skyblue.min.css'>
+		
 		<meta charset='UTF-8'>
 		<title>FM TTS - Dashboard</title>
 	</head>
@@ -24,67 +28,18 @@
 		</div>
 		<div id='container'>
 			<div id='find-user' class='disabled'>
-				<input type='text' id='finduser' placeholder='Find user by email'/>
+				<input type='text' id='finduser' placeholder='Find user by email or name ...'/>
 				<div class='close'>x</div>
-				<button id='find-user-button'>Find User</button>
-				<div id='user-details'>
-					
-					<div id='user-fullname'>
-						<span></span>
-						<span></span>
+				<button id='find-user-button' class='go'>Find Users</button>
+				<button id='clear-results' style='margin-left:1rem;'>Clear Results</button>
+				<div id='users-container' class='splide' aria-label='User Details'>
+					<div class='splide__track'>
+						<div class='splide__list'>
+							<!-- Slides -->
+						</div>
 					</div>
-					<div id='user-email'>
-						<span></span>
-						<span></span>
-					</div>
-					<div id='user-initials'>
-						<span></span>
-						<span></span>
-					</div>
-					<div id='user-registered'>
-						<span></span>
-						<span></span>
-					</div>
-					<div class='spacer'></div>
-					<div id='user-licenceKey'>
-						<span></span>
-						<span></span>
-					</div>
-					<div id='user-licenceType'>
-						<span></span>
-						<span></span>
-					</div>
-					<div class='spacer'></div>
-					<div id='user-feature'>
-						<span></span>
-						<span></span>
-					</div>
-					<div id='user-appFeatureSet'>
-						<span></span>
-						<span></span>
-					</div>
-					<div id='user-roles'>
-						<span></span>
-						<span></span>
-					</div>
-					<div class='spacer'></div>
-					<div id='user-status'>
-						<span></span>
-						<span></span>
-					</div>
-					<div id='user-expires'>
-						<span></span>
-						<span></span>
-					</div>
-					<div id='user-enabled'>
-						<span></span>
-						<span></span>
-					</div>
-					<div id='user-locked'>
-						<span></span>
-						<span></span>
-					</div>
-					
+				</div>
+				<div id='user-action-container'>
 					<div id='actions'>
 						<button id='user-action-user-delete' class='alert'>Delete User</button>
 						<button id='user-action-licence-revoke' class='warn' hidden>Remove Licence</button>
@@ -156,5 +111,66 @@
 				</div>
 			</div>
 		</dialog>
+		<div style='display: none' id='templates'>
+			<div id='user-template' class='splide__slide'>
+				<div class='user-details'>
+					<div id='user-fullname' class='user-title'>
+						<span style='display:none;'></span>
+						<span style='color: whitesmoke; font-weight:bold; font-size:19px;'></span>
+					</div>
+					<div id='user-email'>
+						<span></span>
+						<span></span>
+					</div>
+					<div id='user-initials'>
+						<span></span>
+						<span></span>
+					</div>
+					<div id='user-registered'>
+						<span></span>
+						<span></span>
+					</div>
+					<div class='spacer'></div>
+					<div id='user-licenceKey'>
+						<span></span>
+						<span></span>
+					</div>
+					<div id='user-licenceType'>
+						<span></span>
+						<span></span>
+					</div>
+					<div class='spacer'></div>
+					<div id='user-feature'>
+						<span></span>
+						<span></span>
+					</div>
+					<div id='user-appFeatureSet'>
+						<span></span>
+						<span></span>
+					</div>
+					<div id='user-roles'>
+						<span></span>
+						<span></span>
+					</div>
+					<div class='spacer'></div>
+					<div id='user-status'>
+						<span></span>
+						<span></span>
+					</div>
+					<div id='user-expires'>
+						<span></span>
+						<span></span>
+					</div>
+					<div id='user-enabled'>
+						<span></span>
+						<span></span>
+					</div>
+					<div id='user-locked'>
+						<span></span>
+						<span></span>
+					</div>
+				</div>
+			</div>
+		</div>
 	</body>
 </html>
