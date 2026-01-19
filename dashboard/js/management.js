@@ -1,6 +1,7 @@
 class DashboardState {
 	static #token = '';
 	static #carousel = undefined;
+
 	static set token(value) {
 		DashboardState.#token = value;
 	}
@@ -15,14 +16,19 @@ class DashboardState {
 		const jwt = JSON.parse(atob(DashboardState.#token?.split('.')?.[1]));
 		return jwt?.Email ?? '';
 	}
-
 	static set carousel(value) {
 		DashboardState.#carousel = value;
 	}
-
 	static get carousel() {
 		return DashboardState.#carousel;
 	}
+	static get appConfig() {
+		return fetch('config.json').then (c => {
+			return c.json();
+		});
+	}
+
+
 }
 
 class DashboardHelper {
@@ -198,6 +204,8 @@ const logout = () => {
 	portcullis.style.top = tph + 'px';
 	portcullis.style.height = `calc(100% - ${tph}px`;
 
+	document.querySelector('div#container').style.position = 'fixed';
+
 	document.querySelectorAll('#licence-list > span').forEach(e => e.remove());
 
 	const dialog = document.querySelector('dialog');
@@ -212,6 +220,10 @@ const logout = () => {
 	}, 750);
 }
 
+const getConfig = async () => {
+
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
 	const loginButton = document.querySelector('button#login');
 	const usernameField = document.querySelector('input#username');
@@ -220,6 +232,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 	const dialog = document.querySelector('dialog');
 	const actionResult = document.querySelector('span#action-result');
 	const portcullis = document.querySelector('#portcullis');
+	const container = document.querySelector('div#container');
 
 	// setTimeout (() => {
 	// 	portcullis.addEventListener('transitionend', () => {
@@ -227,9 +240,13 @@ document.addEventListener('DOMContentLoaded', async () => {
 	// 	}, {once: true});
 	// }, 1750);
 
-	const tph = document.querySelector('#top-panel').offsetHeight;
+	const tph = document.querySelector('#top-panel').offsetHeight - 2;
 	portcullis.style.top = tph + 'px';
 	portcullis.style.height = `calc(100% - ${tph}px`;
+	const config = await DashboardState.appConfig;
+	console.info ('APP', config);
+	document.querySelector('div#version').textContent = 'v' + config.version;
+	container.style.top = tph + 'px';
 
 
 	clearResults();
@@ -264,6 +281,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 		if (DashboardState.token.length) {
 			document.querySelectorAll('div.disabled').forEach(e => e.classList.remove('disabled'));
 			portcullis.style.top = window.innerHeight + tph + 'px';
+			container.style.position = 'relative';
 
 			e.target.textContent = 'Logout';
 			userid.textContent = DashboardState.user;
