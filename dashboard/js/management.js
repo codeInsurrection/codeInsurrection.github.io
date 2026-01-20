@@ -39,8 +39,8 @@ class DashboardHelper {
 	 * @returns {Promise<any|string|string>}
 	 */
 	static async ApiCall(name, options = {}) {
-		// const host = 'api.twofires.education';
-		const host = 'localhost';
+		const config = await DashboardState.appConfig;
+		const host = config.host;
 
 		const map = {
 			test: {
