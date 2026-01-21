@@ -39,8 +39,8 @@ class DashboardHelper {
 	 * @returns {Promise<any|string|string>}
 	 */
 	static async ApiCall(name, options = {}) {
-		const config = await DashboardState.appConfig;
-		const host = config.host;
+		const conf = await DashboardState.appConfig;
+		const host = conf.host;
 
 		const map = {
 			test: {
@@ -323,6 +323,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 				break;
 
 			case 'Testing':
+			case 'Trial':
 				feature.value = 'Standard';
 				break;
 
