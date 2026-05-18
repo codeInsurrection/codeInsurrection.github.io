@@ -322,6 +322,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 				feature.value = 'Assessor';
 				break;
 
+			case 'Evaluation Plus':	
 			case 'Testing':
 			case 'Trial':
 				feature.value = 'Standard';
