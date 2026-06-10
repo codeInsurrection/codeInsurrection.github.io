@@ -1,12 +1,16 @@
 
 <html>
   <head>
-    
+    <script>
+      document.querySelector('apiSettings').addEventListener('click', async (e) => {
+        const r = await chrome.runtime.sendMessage ('mbcjhgcchbahnocodopfajipjconbkom', {action: 'externalOpenSettings'});
+      });
+    </script>
   </head>
   <body>
     <h1>This is an integration test</h1>
     <div>
-      <button>Open Settings</button>
+      <button id='apiSettings'>Open Settings</button>
     </div>
   </body>
 </html>
