@@ -2,8 +2,11 @@
 <html>
   <head>
     <script>
-      document.querySelector('#apiSettings').addEventListener('click', async (e) => {
-        const r = await chrome.runtime.sendMessage ('mbcjhgcchbahnocodopfajipjconbkom', {action: 'externalOpenSettings'});
+      document.addEventListener('DOMContentLaoded', () => {
+        document.querySelector('#apiSettings').addEventListener('click', async (e) => {
+          const r = await chrome.runtime.sendMessage ('mbcjhgcchbahnocodopfajipjconbkom', {action: 'externalOpenSettings'});
+          console.info ('API:', r);
+        });
       });
     </script>
   </head>
