@@ -3,7 +3,9 @@
   <head>
     <script>
       document.addEventListener('DOMContentLaoded', () => {
+        console.info ('%cLoaded', 'color:limegreen');
         document.querySelector('#apiSettings').addEventListener('click', async (e) => {
+          console.info ('%cClicked', 'color:cadetblue');
           const r = await chrome.runtime.sendMessage ('mbcjhgcchbahnocodopfajipjconbkom', {action: 'externalOpenSettings'});
           console.info ('API:', r);
         });
