@@ -9,6 +9,12 @@
           const r = await chrome.runtime.sendMessage ('mbcjhgcchbahnocodopfajipjconbkom', {action: 'externalOpenSettings'});
           console.info ('API:', r);
         });
+
+        document.querySelector('#apiSearch').addEventListener('click', async (e) => {
+          console.info ('%cClicked', 'color:cadetblue');
+          const r = await chrome.runtime.sendMessage ('mbcjhgcchbahnocodopfajipjconbkom', {action: 'externalAddSearchTerm'});
+          console.info ('API:', r);
+        });
       });
     </script>
   </head>
