@@ -6,13 +6,13 @@
         console.info ('%cLoaded', 'color:limegreen');
         document.querySelector('#apiSettings').addEventListener('click', async (e) => {
           console.info ('%cClicked', 'color:cadetblue');
-          const r = await chrome.runtime.sendMessage ('mbcjhgcchbahnocodopfajipjconbkom', {action: 'externalOpenSettings'});
+          const r = await chrome.runtime.sendMessage ('mbcjhgcchbahnocodopfajipjconbkom', {action: 'api.openSettings'});
           console.info ('API:', r);
         });
 
         document.querySelector('#apiSearch').addEventListener('click', async (e) => {
           console.info ('%cClicked', 'color:cadetblue');
-          const r = await chrome.runtime.sendMessage ('mbcjhgcchbahnocodopfajipjconbkom', {action: 'externalAddSearchTerm'});
+          const r = await chrome.runtime.sendMessage ('mbcjhgcchbahnocodopfajipjconbkom', {action: 'api.addSearchTerm'});
           console.info ('API:', r);
         });
       });
