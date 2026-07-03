@@ -387,6 +387,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 			]
 		}
 
+		console.info ('[Licence Data]', data);
+
 		const r = await DashboardHelper.ApiCall('generateLicence', data);
 		if (r?.hasOwnProperty('published')) {
 			const il = document.querySelector('div#licence-list');
