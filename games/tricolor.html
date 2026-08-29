@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tricolor · Daily 3-Colour Puzzle</title>
+    <style>
+      *{margin:0;padding:0;box-sizing:border-box}
+      body{
+        font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
+        background:#0f1117;color:#d8d8d8;
+        display:flex;justify-content:center;align-items:center;
+        min-height:100vh;padding:1rem;
+      }
+      #app{text-align:center;max-width:420px;width:100%}
+      
+      h1{font-size:2rem;font-weight:700;letter-spacing:.04em}
+      .sub{color:#777;font-size:.85rem;margin:.15rem 0 1.4rem}
+      
+      .stats{display:flex;gap:.75rem;justify-content:center;margin-bottom:1rem}
+      .stat{background:#1a1d27;border-radius:8px;padding:.45rem 1rem;min-width:90px}
+      .stat-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:#555}
+      .stat-value{font-size:1.35rem;font-weight:700;margin-top:.1rem}
+      .stat-value.clash{color:#ff6b6b}
+      .stat-value.clash.zero{color:#5ddc8e}
+      
+      .grid{
+        display:grid;grid-template-columns:repeat(6,1fr);gap:4px;
+        background:#1a1d27;padding:6px;border-radius:12px;
+        margin:0 auto 1.25rem;max-width:340px;aspect-ratio:1;
+      }
+      .cell{
+        border-radius:6px;position:relative;
+        transition:background .15s ease,box-shadow .15s ease,transform .1s ease;
+        cursor:pointer;user-select:none;aspect-ratio:1;
+      }
+      .cell:hover:not(.locked){transform:scale(1.05)}
+      .cell:active:not(.locked){transform:scale(.95)}
+      .cell.locked{cursor:default}
+      .cell.locked::after{
+        content:    '';position: absolute;width: 10px;height: 10px;
+        background: rgb(0 0 0);border-radius: 50%;
+        bottom:     50%;
+        right:      50%;
+        transform:  translate(50%,50%);
+      }
+      .cell.conflict{box-shadow:inset 0 0 0 4px #FF0000,0 0 6px rgb(0 0 0 / 0.35)}
+      .cell.solved-glow{box-shadow:inset 0 0 0 1.5px rgba(93,220,142,.5)}
+      
+      .cell[data-col="0"]{background: #A30150}
+      .cell[data-col="1"]{background: #049AC0}
+      .cell[data-col="2"]{background: #7300FF}
+      
+      .controls{display:flex;gap:.65rem;justify-content:center;margin-bottom:.75rem;flex-wrap:wrap}
+      button{
+        background:#1a1d27;color:#d8d8d8;border:1px solid #2a2d37;
+        border-radius:8px;padding:.55rem 1.1rem;font-size:.85rem;
+        cursor:pointer;transition:background .15s,border-color .15s;font-family:inherit;
+      }
+      button:hover{background:#252830;border-color:#3a3d47}
+      button.primary{background:#1e3a2a;border-color:#2d5a3d;color:#8fddaa}
+      button.primary:hover{background:#264a35}
+      
+      .seed-info{font-size:.7rem;color:#444;margin-top:.4rem}
+      .msg{min-height:1.4rem;font-size:.85rem;color:#777;margin-top:.25rem}
+      .msg.win{color:#5ddc8e;font-weight:600}
+      
+      @keyframes pop{0%{transform:scale(1)}50%{transform:scale(1.04)}100%{transform:scale(1)}}
+      .grid.won{animation:pop .35s ease}
+      
+      .legend{display:flex;gap:1rem;justify-content:center;margin-bottom:1rem;font-size:.75rem;color:#666}
+      .legend span{display:flex;align-items:center;gap:.3rem}
+      .legend .swatch{width:12px;height:12px;border-radius:3px;display:inline-block}
+      .legend .lock-icon{
+        width:12px;height:12px;border-radius:3px;
+        background:#333;display:inline-flex;align-items:center;justify-content:center;
+        font-size:.55rem;color:#888;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <h1>Tricolor</h1>
+      <p class="sub">Transform the grid to leave no neighbours with a shared color!</p>
+      
+      <div class="stats">
+        <div class="stat">
+          <div class="stat-label">Moves</div>
+          <div class="stat-value" id="moves">0</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Clashes</div>
+          <div class="stat-value clash" id="clashes">0</div>
+        </div>
+      </div>
+      
+      <div class="legend">
+        <span><span class="swatch" style="background:#27EB21"></span></span>
+        <span><span class="swatch" style="background:#4ecdc4"></span></span>
+        <span><span class="swatch" style="background:#ffd93d"></span></span>
+        <span><span class="lock-icon">●</span> locked</span>
+      </div>
+      
+      <div class="grid" id="grid"></div>
+      
+      <div class="controls">
+        <button class="primary" id="btn-today">Today's Puzzle</button>
+        <button id="btn-random">New Random</button>
+      </div>
+      <div class="seed-info" id="seed-info"></div>
+      <div class="msg" id="msg"></div>
+    </div>
+    
+    <script>
+      /* ═══════════════════════════════════════════════════════════
+       CONSTANTS
+       ═══════════════════════════════════════════════════════════ */
+      const N          = 6;
+      const COLORS     = 3;
+      const NUM_LOCKS  = 8;
+      const MIN_CLASHES = 4;
+      
+      /* ═══════════════════════════════════════════════════════════
+       SEEDED RNG  (mulberry32 — 32-bit, fast, good enough)
+       ═══════════════════════════════════════════════════════════ */
+      function mulberry32(seed) {
+        return function () {
+          seed |= 0;
+          seed = seed + 0x6D2B79F5 | 0;
+          let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+          t = t + Math.imul(t ^ (t >>> 7), 61 | t) ^ t;
+          return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+        };
+      }
+      
+      function shuffle(arr, rng) {
+        const a = [...arr];
+        for (let i = a.length - 1; i > 0; i--) {
+          const j = Math.floor(rng() * (i + 1));
+          [a[i], a[j]] = [a[j], a[i]];
+        }
+        return a;
+      }
+      
+      /* ═══════════════════════════════════════════════════════════
+       GRID HELPERS
+       ═══════════════════════════════════════════════════════════ */
+      function neighbours(r, c) {
+        const ns = [];
+        if (r > 0)     ns.push([r - 1, c]);
+        if (r < N - 1) ns.push([r + 1, c]);
+        if (c > 0)     ns.push([r, c - 1]);
+        if (c < N - 1) ns.push([r, c + 1]);
+        return ns;
+      }
+      
+      function countClashes(grid) {
+        let n = 0;
+        for (let r = 0; r < N; r++) {
+          for (let c = 0; c < N; c++) {
+            if (c < N - 1 && grid[r][c] === grid[r][c + 1]) n++;
+            if (r < N - 1 && grid[r][c] === grid[r + 1][c]) n++;
+          }
+        }
+        return n;
+      }
+      
+      function conflictSet(grid) {
+        const s = new Set();
+        for (let r = 0; r < N; r++) {
+          for (let c = 0; c < N; c++) {
+            if (c < N - 1 && grid[r][c] === grid[r][c + 1]) {
+              s.add(r + ',' + c); s.add(r + ',' + (c + 1));
+            }
+            if (r < N - 1 && grid[r][c] === grid[r + 1][c]) {
+              s.add(r + ',' + c); s.add((r + 1) + ',' + c);
+            }
+          }
+        }
+        return s;
+      }
+      
+      /* ═══════════════════════════════════════════════════════════
+       PUZZLE GENERATION
+       "Generate the answer, then obscure it."
+       ═══════════════════════════════════════════════════════════ */
+      function generatePuzzle(seed) {
+        const rng = mulberry32(seed);
+        
+        /* ── 1. Build a valid 3-colouring ────────────────────── */
+        //    Start from a chessboard (colours 0 / 1 by parity),
+        //    then sprinkle colour 2 in random order.
+        const sol = Array.from({ length: N }, (_, r) =>
+                Array.from({ length: N }, (_, c) => (r + c) % 2)
+        );
+        
+        const allCells = [];
+        for (let r = 0; r < N; r++)
+          for (let c = 0; c < N; c++)
+            allCells.push([r, c]);
+        
+        for (const [r, c] of shuffle(allCells, rng)) {
+          if (rng() < 0.30) {
+            if (!neighbours(r, c).some(([nr, nc]) => sol[nr][nc] === 2)) {
+              sol[r][c] = 2;
+            }
+          }
+        }
+        
+        // Safety: guarantee at least one colour-2 cell exists
+        // (probability is ~0 for 25 cells at 30 %, but be defensive)
+        const col2Cells = allCells.filter(([r, c]) => sol[r][c] === 2);
+        if (col2Cells.length === 0) {
+          const [fr, fc] = shuffle(allCells, rng)[0];
+          sol[fr][fc] = 2;
+        }
+        
+        /* ── 2. Pick locked cells ────────────────────────────── */
+        //    At least one must be colour-2 to kill both chessboard
+        //    phases and force a 3-colour solution.
+        const locked = new Set();
+        
+        const [lr, lc] = col2Cells[Math.floor(rng() * col2Cells.length)];
+        locked.add(lr + ',' + lc);
+        
+        // Fill remaining locks, spread (Manhattan distance ≥ 2)
+        for (const [r, c] of shuffle(allCells, rng)) {
+          if (locked.size >= NUM_LOCKS) break;
+          const key = r + ',' + c;
+          if (locked.has(key)) continue;
+          let ok = true;
+          for (const lk of locked) {
+            const [br, bc] = lk.split(',').map(Number);
+            if (Math.abs(r - br) + Math.abs(c - bc) < 2) { ok = false; break; }
+          }
+          if (ok) locked.add(key);
+        }
+        
+        // Fallback if distance-2 was too strict on this seed
+        for (const [r, c] of shuffle(allCells, rng)) {
+          if (locked.size >= NUM_LOCKS) break;
+          locked.add(r + ',' + c);
+        }
+        
+        // Convert to 2-D boolean for fast lookup
+        const lockedGrid = Array.from({ length: N }, (_, r) =>
+                Array.from({ length: N }, (_, c) => locked.has(r + ',' + c))
+        );
+        
+        /* ── 3. Scramble the free cells ──────────────────────── */
+        //    The solution `sol` is already a valid answer that
+        //    respects every lock, so the puzzle is ALWAYS solvable.
+        const puzzle = sol.map(row => [...row]);
+        let clashes = 0;
+        for (let attempt = 0; attempt < 60; attempt++) {
+          for (let r = 0; r < N; r++) {
+            for (let c = 0; c < N; c++) {
+              if (!lockedGrid[r][c]) {
+                puzzle[r][c] = Math.floor(rng() * COLORS);
+              }
+            }
+          }
+          clashes = countClashes(puzzle);
+          if (clashes >= MIN_CLASHES) break;
+        }
+        
+        return { puzzle, locked: lockedGrid, solution: sol, seed };
+      }
+      
+      /* ═══════════════════════════════════════════════════════════
+       GAME STATE
+       ═══════════════════════════════════════════════════════════ */
+      const S = {
+        puzzle:   null,
+        locked:   null,
+        solution: null,
+        seed:     0,
+        moves:    0,
+        solved:   false,
+      };
+      
+      /* ═══════════════════════════════════════════════════════════
+       RENDERING
+       ═══════════════════════════════════════════════════════════ */
+      const gridEl   = document.getElementById('grid');
+      const movesEl  = document.getElementById('moves');
+      const clashEl  = document.getElementById('clashes');
+      const msgEl    = document.getElementById('msg');
+      const seedEl   = document.getElementById('seed-info');
+      
+      function render() {
+        gridEl.innerHTML = '';
+        const confs = S.solved ? new Set() : conflictSet(S.puzzle);
+        
+        for (let r = 0; r < N; r++) {
+          for (let c = 0; c < N; c++) {
+            const cell = document.createElement('div');
+            cell.className = 'cell';
+            cell.dataset.col = S.puzzle[r][c];
+            
+            if (S.locked[r][c]) cell.classList.add('locked');
+            if (confs.has(r + ',' + c)) cell.classList.add('conflict');
+            if (S.solved) cell.classList.add('solved-glow');
+            
+            cell.addEventListener('click', () => onCellClick(r, c));
+            gridEl.appendChild(cell);
+          }
+        }
+        
+        movesEl.textContent = S.moves;
+        const nClashes = S.solved ? 0 : countClashes(S.puzzle);
+        clashEl.textContent = nClashes;
+        clashEl.classList.toggle('zero', nClashes === 0);
+      }
+      
+      function onCellClick(r, c) {
+        if (S.solved || S.locked[r][c]) return;
+        
+        S.puzzle[r][c] = (S.puzzle[r][c] + 1) % COLORS;
+        S.moves++;
+        
+        if (countClashes(S.puzzle) === 0) {
+          S.solved = true;
+          render();
+          gridEl.classList.add('won');
+          msgEl.textContent = 'Solved in ' + S.moves + ' move' + (S.moves !== 1 ? 's' : '') + '!';
+          msgEl.classList.add('win');
+          setTimeout(() => gridEl.classList.remove('won'), 350);
+        } else {
+          render();
+          msgEl.textContent = '';
+          msgEl.classList.remove('win');
+        }
+      }
+      
+      function loadPuzzle(seed, label) {
+        const g = generatePuzzle(seed);
+        Object.assign(S, {
+          puzzle:   g.puzzle,
+          locked:   g.locked,
+          solution: g.solution,
+          seed:     g.seed,
+          moves:    0,
+          solved:   false,
+        });
+        render();
+        msgEl.textContent = 'Tap a tile to cycle its colour. Clashed tiles are outlined white, fixed tiles have a central dot.';
+        msgEl.classList.remove('win');
+        seedEl.textContent = label + '  ·  seed ' + seed;
+      }
+      
+      /* ═══════════════════════════════════════════════════════════
+       DAILY SEED
+       ═══════════════════════════════════════════════════════════ */
+      function todaySeed() {
+        const d = new Date();
+        return d.getFullYear() * 10000 + (d.getMonth() + 1) * 100 + d.getDate();
+      }
+      function todayLabel() {
+        return 'Today · ' + new Date().toLocaleDateString(undefined, {
+          weekday: 'long', month: 'short', day: 'numeric',
+        });
+      }
+      
+      /* ═══════════════════════════════════════════════════════════
+       WIRE UP
+       ═══════════════════════════════════════════════════════════ */
+      document.getElementById('btn-today').addEventListener('click', () =>
+              loadPuzzle(todaySeed(), todayLabel())
+      );
+      document.getElementById('btn-random').addEventListener('click', () =>
+              loadPuzzle(Math.floor(Math.random() * 2 ** 31), 'Random')
+      );
+      
+      // Load today's puzzle on page open
+      loadPuzzle(todaySeed(), todayLabel());
+    </script>
+  </body>
+</html>
