@@ -364,12 +364,13 @@
           S.solved = true;
           render();
           gridEl.classList.add('won');
+          msgEl.style.visibility = 'visible';
           msgEl.textContent = 'Solved in ' + S.moves + ' move' + (S.moves !== 1 ? 's' : '') + '!';
           msgEl.classList.add('win');
           setTimeout(() => gridEl.classList.remove('won'), 350);
         } else {
           render();
-          msgEl.textContent = '';
+          msgEl.style.visibility = 'visible';
           msgEl.classList.remove('win');
         }
       }
@@ -385,7 +386,7 @@
           solved:   false,
         });
         render();
-        //msgEl.textContent = 'Tricolori \n\nClick tiles to cycle their color to always ensure neighbouring tiles are different colours.';
+        msgEl.style.visibility = 'visible';
         msgEl.innerHTML = '<b>Tricolori</b><br><span style="margin-top: 0.15rem; display:inline-block;">Part of the FindMe puzzle series</span>';
         msgEl.classList.remove('win');
         seedEl.textContent = label + '  ·  seed ' + seed;
