@@ -36,15 +36,56 @@
       }
       .cell:hover:not(.locked){transform:scale(1.05)}
       .cell:active:not(.locked){transform:scale(.95)}
-      .cell.locked{cursor:default}
-      .cell.locked::after{
-        content:    '';position: absolute;width: 10px;height: 10px;
-        background: rgb(0 0 0);border-radius: 50%;
+      .cell.locked{cursor:default; overflow:hidden}
+      .cell.locked::after {
+        content:    '🔒';
+        position: absolute;
+        /*width: 10px;*/
+        /*height: 10px;*/
+        /*background: rgb(0 0 0);border-radius: 50%;*/
         bottom:     50%;
         right:      50%;
+        filter: contrast(2) brightness(0.1);
         transform:  translate(50%,50%);
       }
-      .cell.conflict{box-shadow:inset 0 0 0 4px #FF0000,0 0 6px rgb(0 0 0 / 0.35)}
+      
+      .cell.lockedx::after {
+        content: '';
+        position: absolute;
+        /* Stretch to fill the entire cell, or adjust width/height if you want it contained */
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        
+        /* Creates a repeating horizontal line pattern */
+        background: repeating-linear-gradient(
+                            -45deg,
+                            rgba(255, 255, 255, 0.35),
+                            rgba(255, 255, 255, 0.35) 4px,
+                            transparent 4px,
+                            transparent 12px
+                    );
+        /* Ensures the pattern repeats vertically */
+        background-size: 100% 100%;
+        overflow: hidden;
+      }
+      
+      /*.cell.conflict{box-shadow:inset 0 0 0 4px #FF0000,0 0 6px rgb(0 0 0 / 0.35)}*/
+      .cell.conflict:not(.locked)::after {
+          content:       '❌';
+        filter: opacity(0.85);
+          position:      absolute;
+          /*width:         10px;*/
+          /*height:        10px;*/
+          /*background:    rgb(255 0 66 / 0.65);*/
+          /*border-radius: 50%;*/
+        display:         block;
+        left:            50%;
+        top:             50%;
+        transform:       translate(-50%, -50%);
+        z-index:         1;
+      }
       .cell.solved-glow{box-shadow:inset 0 0 0 1.5px rgba(93,220,142,.5)}
       
       .cell[data-col="0"]{background: #A30150}
@@ -62,7 +103,7 @@
       button.primary:hover{background:#264a35}
       
       .seed-info{font-size:.7rem;color:#444;margin-top:.4rem}
-      .msg{min-height:1.4rem;font-size:.85rem;color:#777;margin-top:.25rem}
+      .msg{min-height:1.4rem;font-size:.85rem;color:#777;margin-top:1.6rem}
       .msg.win{color:#5ddc8e;font-weight:600}
       
       @keyframes pop{0%{transform:scale(1)}50%{transform:scale(1.04)}100%{transform:scale(1)}}
@@ -70,9 +111,9 @@
       
       .legend{display:flex;gap:1rem;justify-content:center;margin-bottom:1rem;font-size:.75rem;color:#666}
       .legend span{display:flex;align-items:center;gap:.3rem}
-      .legend .swatch{width:12px;height:12px;border-radius:3px;display:inline-block}
+      .legend .swatch {width:18px;height:18px;border-radius:3px;display:inline-block}
       .legend .lock-icon{
-        width:12px;height:12px;border-radius:3px;
+        width:18px;height:18px;border-radius:3px;
         background:#333;display:inline-flex;align-items:center;justify-content:center;
         font-size:.55rem;color:#888;
       }
@@ -80,8 +121,8 @@
   </head>
   <body>
     <div id="app">
-      <h1>Tricolor</h1>
-      <p class="sub">Transform the grid to leave no neighbours with a shared color!</p>
+      <h1>Tricolori</h1>
+      <p class="sub">Transform the grid by clicking tiles to cycle their color so no neighbouring tiles have matching colours.</p>
       
       <div class="stats">
         <div class="stat">
@@ -95,10 +136,10 @@
       </div>
       
       <div class="legend">
-        <span><span class="swatch" style="background:#27EB21"></span></span>
-        <span><span class="swatch" style="background:#4ecdc4"></span></span>
-        <span><span class="swatch" style="background:#ffd93d"></span></span>
-        <span><span class="lock-icon">●</span> locked</span>
+
+        <span></span>
+        <span><span class="swatch lock-icon" style="background:#E5E5E5"><span style='filter:opacity(0.85)'>︎︎︎❌</span></span> conflict</span>
+        <span><span class="swatch lock-icon" style="background:#E5E5E5"><span style='filter:brightness(0.1) contrast(2)'>︎︎︎🔒</span></span> locked</span>
       </div>
       
       <div class="grid" id="grid"></div>
@@ -344,7 +385,8 @@
           solved:   false,
         });
         render();
-        msgEl.textContent = 'Tap a tile to cycle its colour. Clashed tiles are outlined white, fixed tiles have a central dot.';
+        //msgEl.textContent = 'Tricolori \n\nClick tiles to cycle their color to always ensure neighbouring tiles are different colours.';
+        msgEl.innerHTML = '<b>Tricolori</b><br><span style="margin-top: 0.15rem; display:inline-block;">Part of the FindMe puzzle series</span>';
         msgEl.classList.remove('win');
         seedEl.textContent = label + '  ·  seed ' + seed;
       }
